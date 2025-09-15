@@ -39,13 +39,10 @@ class S3Metrics
         }
 
         $provider = config('pulse-s3-metrics.provider', 'aws');
-        \Log::info('S3Metrics recorder called', ['provider' => $provider]);
 
         if ($provider === 'oci') {
-            \Log::info('Recording OCI metrics');
             $this->recordOCIMetrics();
         } else {
-            \Log::info('Recording AWS metrics');
             $this->recordAWSMetrics();
         }
     }
@@ -90,8 +87,6 @@ class S3Metrics
         $slug = sprintf('oci.%s.%s', $bucket, $storageClass);
 
         try {
-            \Log::info('Creating S3 client for OCI', ['bucket' => $bucket, 'endpoint' => $ociConfig['endpoint']]);
-            
             // Create S3 client to get actual bucket statistics
             $s3Client = new \Aws\S3\S3Client([
                 'version' => 'latest',
@@ -103,15 +98,11 @@ class S3Metrics
                 ],
                 'use_path_style_endpoint' => true,
             ]);
-            
-            \Log::info('S3 client created successfully');
 
             // Get bucket statistics - iterate through all objects using pagination
             $totalSize = 0;
             $totalObjects = 0;
             $continuationToken = null;
-            
-            \Log::info('Listing all objects in bucket', ['bucket' => $bucket]);
             
             do {
                 $params = [
@@ -132,25 +123,9 @@ class S3Metrics
                 
                 $continuationToken = $objects['NextContinuationToken'] ?? null;
                 
-                \Log::info('Processed batch', [
-                    'bucket' => $bucket,
-                    'batchSize' => count($objects['Contents'] ?? []),
-                    'totalSize' => $totalSize,
-                    'totalObjects' => $totalObjects,
-                    'hasMore' => $continuationToken ? 'yes' : 'no'
-                ]);
-                
             } while ($continuationToken);
-            
-            \Log::info('Final bucket statistics collected', [
-                'bucket' => $bucket,
-                'totalSize' => $totalSize,
-                'totalObjects' => $totalObjects
-            ]);
 
             // Record the metrics using Pulse's built-in methods
-            \Log::info('Recording metrics to Pulse', ['slug' => $slug, 'size' => $totalSize, 'objects' => $totalObjects]);
-            
             $this->pulse->record(
                 type: 's3_bytes',
                 key: $slug,
@@ -177,7 +152,6 @@ class S3Metrics
             ], flags: JSON_THROW_ON_ERROR);
             
             $this->pulse->set('s3_bucket', $slug, $values);
-            \Log::info('Metrics recorded successfully', ['slug' => $slug]);
 
         } catch (\Exception $e) {
             \Log::error('OCI S3 Metrics collection failed: ' . $e->getMessage(), [

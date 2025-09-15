@@ -7,9 +7,9 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/aliosmanyuksel/laravel-pulse-s3-metrics/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/aliosmanyuksel/laravel-pulse-s3-metrics/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/aliosmanyuksel/laravel-pulse-s3-metrics.svg?style=flat-square)](https://packagist.org/packages/aliosmanyuksel/laravel-pulse-s3-metrics)
 
-Fetch existing data usage and storage metrics from AWS CloudWatch for your S3 buckets and display them in a card on your [Laravel Pulse](https://pulse.laravel.com/) dashboard.
+Fetch existing data usage and storage metrics from **AWS CloudWatch** and **Oracle Cloud Infrastructure (OCI)** for your S3 buckets and display them in a card on your [Laravel Pulse](https://pulse.laravel.com/) dashboard.
 
-**This is a Laravel 12 compatible fork of the original package by Arcana Softworks.**
+**This is a Laravel 12 compatible fork with AWS & OCI support of the original package by Arcana Softworks.**
 
 ![Screenshot of the S3 Metrics Pulse card](art%2Fscreenshot1.png)
 
@@ -40,24 +40,59 @@ return [
 
     'enabled' => env('PULSE_S3_METRICS_ENABLED', true),
 
+    // Provider: 'aws' or 'oci'
+    'provider' => env('S3_PROVIDER', 'aws'),
+
+    // AWS Configuration
+    'aws' => [
+        'key' => env('AWS_ACCESS_KEY_ID'),
+        'secret' => env('AWS_SECRET_ACCESS_KEY'),
+        'region' => env('AWS_DEFAULT_REGION'),
+        'bucket' => env('AWS_BUCKET'),
+        'class' => env('AWS_STORAGE_CLASS', 'StandardStorage'),
+    ],
+
+    // OCI Configuration
+    'oci' => [
+        'key' => env('OCI_ACCESS_KEY_ID'),
+        'secret' => env('OCI_SECRET_ACCESS_KEY'),
+        'region' => env('OCI_DEFAULT_REGION'),
+        'bucket' => env('OCI_BUCKET'),
+        'namespace' => env('OCI_NAMESPACE'),
+        'class' => env('OCI_STORAGE_CLASS', 'StandardStorage'),
+    ],
+
+    // Legacy support (deprecated, use aws.* instead)
     'key' => env('AWS_ACCESS_KEY_ID'),
-
     'secret' => env('AWS_SECRET_ACCESS_KEY'),
-
     'region' => env('AWS_DEFAULT_REGION'),
-
     'bucket' => env('AWS_BUCKET'),
-
     'class' => env('AWS_STORAGE_CLASS', 'StandardStorage'),
     
 ];
 ```
 
-By default, this package will fetch metrics for the S3 bucket specified in your `AWS_BUCKET` environment variable. You can override this by setting the `bucket` config value.
+## Configuration Options
 
-One variable you may be missing is the `AWS_STORAGE_CLASS` variable, which has been introduced by this package. This should be set to the storage class of your S3 bucket. The default value is `StandardStorage`, which is the default storage class for S3 buckets. If you have a different storage class, you should set this variable to the appropriate value.
+### Provider Selection
+Set `S3_PROVIDER=aws` for AWS S3 or `S3_PROVIDER=oci` for Oracle Cloud Infrastructure Object Storage.
 
-The region should be the region where your S3 metrics are stored on CloudWatch.
+### AWS Configuration
+- `AWS_ACCESS_KEY_ID`: Your AWS access key ID
+- `AWS_SECRET_ACCESS_KEY`: Your AWS secret access key  
+- `AWS_DEFAULT_REGION`: AWS region where your S3 bucket is located
+- `AWS_BUCKET`: Name of your S3 bucket
+- `AWS_STORAGE_CLASS`: Storage class (default: StandardStorage)
+
+### OCI Configuration
+- `OCI_ACCESS_KEY_ID`: Your OCI access key ID
+- `OCI_SECRET_ACCESS_KEY`: Your OCI secret access key
+- `OCI_DEFAULT_REGION`: OCI region where your bucket is located
+- `OCI_BUCKET`: Name of your OCI bucket
+- `OCI_NAMESPACE`: OCI namespace for your bucket
+- `OCI_STORAGE_CLASS`: Storage class (default: StandardStorage)
+
+The region should be the region where your S3/OCI metrics are stored on CloudWatch.
 
 ### Install the Recorder
 

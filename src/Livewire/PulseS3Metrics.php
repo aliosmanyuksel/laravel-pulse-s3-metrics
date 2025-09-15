@@ -26,8 +26,15 @@ class PulseS3Metrics extends Card
                 ->map(function ($bucket, $slug) use ($graphs) {
                     $values = json_decode($bucket->value, flags: JSON_THROW_ON_ERROR);
 
+                    // Parse provider and bucket name from slug
+                    $slugParts = explode('.', $slug);
+                    $provider = $slugParts[0] ?? 'Unknown';
+                    $bucketName = $slugParts[1] ?? 'Unknown';
+
                     return (object) [
-                        'bucket' => (string) str($slug)->beforeLast('.'),
+                        'provider' => strtoupper($provider),
+                        'bucket' => $bucketName,
+                        'storage_class' => $values->storage_class ?? 'Unknown',
                         'size_current' => (int) ($values->size_current ?? 0),
                         'size_peak' => (int) ($values->size_peak ?? 0),
                         'size' => $graphs->get($slug)?->get('s3_bytes')->filter() ?? collect(),

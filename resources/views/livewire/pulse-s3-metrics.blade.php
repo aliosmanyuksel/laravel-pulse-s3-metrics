@@ -17,7 +17,7 @@
 @endphp
 
 <x-pulse::card :cols="$cols" :rows="$rows" :class="$class">
-    <x-pulse::card-header name="S3 Usage">
+    <x-pulse::card-header name="S3 Usage (AWS & OCI)">
         <x-slot:icon>
             <x-pulse::icons.circle-stack />
         </x-slot:icon>
@@ -47,7 +47,14 @@
                 </div>
                 <div wire:key="{{ $slug }}-name" class="flex items-center {{ $buckets->count() > 1 ? 'py-2' : '' }} {{ ! $bucket->recently_reported ? 'opacity-25 animate-pulse' : '' }}">
                     <x-pulse::icons.circle-stack class="w-6 h-6 mr-2 stroke-gray-500 dark:stroke-gray-400" />
-                    <span class="text-base font-bold text-gray-600 dark:text-gray-300" title="Time: {{ number_format($time) }}ms; Run at: {{ $runAt }};">{{ $bucket->bucket }}</span>
+                    <div class="flex flex-col">
+                        <span class="text-base font-bold text-gray-600 dark:text-gray-300" title="Time: {{ number_format($time) }}ms; Run at: {{ $runAt }};">
+                            {{ $bucket->bucket }}
+                        </span>
+                        <span class="text-xs text-gray-500 dark:text-gray-400">
+                            {{ $bucket->provider }} • {{ $bucket->storage_class }}
+                        </span>
+                    </div>
                 </div>
                 <div wire:key="{{ $slug }}-size" class="flex items-center {{ $buckets->count() > 1 ? 'py-2' : '' }} {{ ! $bucket->recently_reported ? 'opacity-25 animate-pulse' : '' }}">
                     <div class="w-36 flex-shrink-0 whitespace-nowrap tabular-nums">
@@ -76,10 +83,10 @@
                 <div wire:key="{{ $slug }}-objects" class="flex items-center {{ $buckets->count() > 1 ? 'py-2' : '' }} {{ ! $bucket->recently_reported ? 'opacity-25 animate-pulse' : '' }}">
                     <div class="w-36 flex-shrink-0 whitespace-nowrap tabular-nums">
                         <span class="text-xl font-bold text-gray-700 dark:text-gray-200">
-                            {{ $bucket->objects_current }}
+                            {{ number_format($bucket->objects_current) }}
                         </span>
                         <span class="text-sm font-medium text-gray-500 dark:text-gray-400" title="Peak number of objects recorded">
-                            / {{ $bucket->objects_peak }}
+                            / {{ number_format($bucket->objects_peak) }}
                         </span>
                     </div>
                 </div>

@@ -106,22 +106,43 @@ class S3Metrics
             
             \Log::info('S3 client created successfully');
 
-            // Get bucket statistics
+            // Get bucket statistics - iterate through all objects using pagination
             $totalSize = 0;
             $totalObjects = 0;
+            $continuationToken = null;
             
-            \Log::info('Listing objects in bucket', ['bucket' => $bucket]);
-            $objects = $s3Client->listObjectsV2([
-                'Bucket' => $bucket,
-                'MaxKeys' => 1000
-            ]);
+            \Log::info('Listing all objects in bucket', ['bucket' => $bucket]);
+            
+            do {
+                $params = [
+                    'Bucket' => $bucket,
+                    'MaxKeys' => 1000
+                ];
+                
+                if ($continuationToken) {
+                    $params['ContinuationToken'] = $continuationToken;
+                }
+                
+                $objects = $s3Client->listObjectsV2($params);
 
-            foreach ($objects['Contents'] ?? [] as $object) {
-                $totalSize += $object['Size'];
-                $totalObjects++;
-            }
+                foreach ($objects['Contents'] ?? [] as $object) {
+                    $totalSize += $object['Size'];
+                    $totalObjects++;
+                }
+                
+                $continuationToken = $objects['NextContinuationToken'] ?? null;
+                
+                \Log::info('Processed batch', [
+                    'bucket' => $bucket,
+                    'batchSize' => count($objects['Contents'] ?? []),
+                    'totalSize' => $totalSize,
+                    'totalObjects' => $totalObjects,
+                    'hasMore' => $continuationToken ? 'yes' : 'no'
+                ]);
+                
+            } while ($continuationToken);
             
-            \Log::info('Bucket statistics collected', [
+            \Log::info('Final bucket statistics collected', [
                 'bucket' => $bucket,
                 'totalSize' => $totalSize,
                 'totalObjects' => $totalObjects

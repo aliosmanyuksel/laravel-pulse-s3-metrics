@@ -69,30 +69,70 @@ class S3Metrics
 
     private function recordOCIMetrics(): void
     {
-        // Configure and instantiate the CloudWatch client for OCI.
-        // OCI uses AWS CloudWatch compatible API with different endpoint
-        $region = config('pulse-s3-metrics.oci.region');
-        $cloudWatch = new \Aws\CloudWatch\CloudWatchClient([
-            'version' => 'latest',
-            'region' => $region,
-            'endpoint' => sprintf('https://telemetry-ingestion.%s.oraclecloud.com', $region),
-            'credentials' => [
-                'key' => config('pulse-s3-metrics.oci.key'),
-                'secret' => config('pulse-s3-metrics.oci.secret'),
-            ],
-        ]);
+        // Use filesystem config for OCI
+        $ociConfig = config('filesystems.disks.oci');
+        
+        if (!$ociConfig) {
+            \Log::error('OCI filesystem configuration not found');
+            return;
+        }
 
-        $bucket = config('pulse-s3-metrics.oci.bucket');
-        $storageClass = config('pulse-s3-metrics.oci.class');
-        $namespace = config('pulse-s3-metrics.oci.namespace');
-
+        // For OCI, we'll simulate metrics based on actual bucket usage
+        // since OCI monitoring API is different from AWS CloudWatch
+        $bucket = $ociConfig['bucket'];
+        $storageClass = config('pulse-s3-metrics.oci.class', 'StandardStorage');
+        
         // Create a slugged named for the bucket.
         $slug = sprintf('oci.%s.%s', $bucket, $storageClass);
 
-        // OCI uses a different namespace format
-        $ociNamespace = sprintf('oci_objectstorage_%s', $namespace);
-        
-        $this->fetchAndRecordMetrics($cloudWatch, $bucket, $storageClass, $slug, $ociNamespace);
+        try {
+            // Create S3 client to get actual bucket statistics
+            $s3Client = new \Aws\S3\S3Client([
+                'version' => 'latest',
+                'region' => $ociConfig['region'],
+                'endpoint' => $ociConfig['endpoint'],
+                'credentials' => [
+                    'key' => $ociConfig['key'],
+                    'secret' => $ociConfig['secret'],
+                ],
+                'use_path_style_endpoint' => true,
+            ]);
+
+            // Get bucket statistics
+            $totalSize = 0;
+            $totalObjects = 0;
+            
+            $objects = $s3Client->listObjectsV2([
+                'Bucket' => $bucket,
+                'MaxKeys' => 1000
+            ]);
+
+            foreach ($objects['Contents'] ?? [] as $object) {
+                $totalSize += $object['Size'];
+                $totalObjects++;
+            }
+
+            // Record the metrics
+            $this->recordBytesUsedForBucket($slug, time(), $totalSize);
+            $this->recordObjectsForBucket($slug, time(), $totalObjects);
+
+            $provider = 'OCI';
+            $this->pulse->set('s3_bucket', $slug, $values = json_encode([
+                'name' => $bucket,
+                'provider' => $provider,
+                'storage_class' => $storageClass,
+                'size_current' => $totalSize,
+                'size_peak' => $totalSize,
+                'objects_current' => $totalObjects,
+                'objects_peak' => $totalObjects,
+            ], flags: JSON_THROW_ON_ERROR));
+
+        } catch (\Exception $e) {
+            \Log::error('OCI S3 Metrics collection failed: ' . $e->getMessage(), [
+                'provider' => 'oci',
+                'bucket' => $bucket,
+            ]);
+        }
     }
 
     private function fetchAndRecordMetrics($cloudWatch, $bucket, $storageClass, $slug, $namespace): void

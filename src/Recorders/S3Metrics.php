@@ -90,6 +90,8 @@ class S3Metrics
         $slug = sprintf('oci.%s.%s', $bucket, $storageClass);
 
         try {
+            \Log::info('Creating S3 client for OCI', ['bucket' => $bucket, 'endpoint' => $ociConfig['endpoint']]);
+            
             // Create S3 client to get actual bucket statistics
             $s3Client = new \Aws\S3\S3Client([
                 'version' => 'latest',
@@ -101,11 +103,14 @@ class S3Metrics
                 ],
                 'use_path_style_endpoint' => true,
             ]);
+            
+            \Log::info('S3 client created successfully');
 
             // Get bucket statistics
             $totalSize = 0;
             $totalObjects = 0;
             
+            \Log::info('Listing objects in bucket', ['bucket' => $bucket]);
             $objects = $s3Client->listObjectsV2([
                 'Bucket' => $bucket,
                 'MaxKeys' => 1000
@@ -115,8 +120,16 @@ class S3Metrics
                 $totalSize += $object['Size'];
                 $totalObjects++;
             }
+            
+            \Log::info('Bucket statistics collected', [
+                'bucket' => $bucket,
+                'totalSize' => $totalSize,
+                'totalObjects' => $totalObjects
+            ]);
 
             // Record the metrics using Pulse's built-in methods
+            \Log::info('Recording metrics to Pulse', ['slug' => $slug, 'size' => $totalSize, 'objects' => $totalObjects]);
+            
             $this->pulse->record(
                 type: 's3_bytes',
                 key: $slug,
@@ -132,7 +145,7 @@ class S3Metrics
             );
 
             $provider = 'OCI';
-            $this->pulse->set('s3_bucket', $slug, $values = json_encode([
+            $values = json_encode([
                 'name' => $bucket,
                 'provider' => $provider,
                 'storage_class' => $storageClass,
@@ -140,7 +153,10 @@ class S3Metrics
                 'size_peak' => $totalSize,
                 'objects_current' => $totalObjects,
                 'objects_peak' => $totalObjects,
-            ], flags: JSON_THROW_ON_ERROR));
+            ], flags: JSON_THROW_ON_ERROR);
+            
+            $this->pulse->set('s3_bucket', $slug, $values);
+            \Log::info('Metrics recorded successfully', ['slug' => $slug]);
 
         } catch (\Exception $e) {
             \Log::error('OCI S3 Metrics collection failed: ' . $e->getMessage(), [

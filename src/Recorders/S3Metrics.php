@@ -39,10 +39,13 @@ class S3Metrics
         }
 
         $provider = config('pulse-s3-metrics.provider', 'aws');
+        \Log::info('S3Metrics recorder called', ['provider' => $provider]);
 
         if ($provider === 'oci') {
+            \Log::info('Recording OCI metrics');
             $this->recordOCIMetrics();
         } else {
+            \Log::info('Recording AWS metrics');
             $this->recordAWSMetrics();
         }
     }

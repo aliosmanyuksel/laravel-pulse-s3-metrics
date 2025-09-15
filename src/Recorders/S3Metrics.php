@@ -70,9 +70,12 @@ class S3Metrics
     private function recordOCIMetrics(): void
     {
         // Configure and instantiate the CloudWatch client for OCI.
+        // OCI uses AWS CloudWatch compatible API with different endpoint
+        $region = config('pulse-s3-metrics.oci.region');
         $cloudWatch = new \Aws\CloudWatch\CloudWatchClient([
             'version' => 'latest',
-            'region' => config('pulse-s3-metrics.oci.region'),
+            'region' => $region,
+            'endpoint' => sprintf('https://telemetry-ingestion.%s.oraclecloud.com', $region),
             'credentials' => [
                 'key' => config('pulse-s3-metrics.oci.key'),
                 'secret' => config('pulse-s3-metrics.oci.secret'),

@@ -144,12 +144,10 @@ class S3Metrics
                 timestamp: $currentTimestamp,
             );
 
-            // Get historical data to calculate peaks
-            $historicalBytes = $this->pulse->graph(['s3_bytes'], 'max')->get($slug)?->get('s3_bytes') ?? collect();
-            $historicalObjects = $this->pulse->graph(['s3_objects'], 'max')->get($slug)?->get('s3_objects') ?? collect();
-            
-            $sizePeak = $historicalBytes->max() ?? $totalSize;
-            $objectsPeak = $historicalObjects->max() ?? $totalObjects;
+            // For now, use current values as peaks until we have historical data
+            // This will be improved as more data points are collected over time
+            $sizePeak = $totalSize;
+            $objectsPeak = $totalObjects;
 
             $provider = 'OCI';
             $values = json_encode([

@@ -30,6 +30,7 @@ class S3Metrics
     {
         // Run every hour when running in worker mode.
         // The S3 metrics are updated on CloudWatch daily, so we can relax.
+        // For S3MetricsRequested events, always run (for testing purposes)
         if ($event instanceof SharedBeat &&
             $event->time->minute !== 0 &&
             $event->time->second !== 0

@@ -125,20 +125,31 @@ class S3Metrics
                 
             } while ($continuationToken);
 
-            // Record the metrics using Pulse's built-in methods
+            // Get current timestamp for consistent time series
+            $currentTimestamp = time();
+            
+            // Record the metrics using Pulse's built-in methods with timestamp
+            // This creates a time series that can be graphed
             $this->pulse->record(
                 type: 's3_bytes',
                 key: $slug,
                 value: $totalSize,
-                timestamp: time(),
+                timestamp: $currentTimestamp,
             );
             
             $this->pulse->record(
                 type: 's3_objects',
                 key: $slug,
                 value: $totalObjects,
-                timestamp: time(),
+                timestamp: $currentTimestamp,
             );
+
+            // Get historical data to calculate peaks
+            $historicalBytes = $this->pulse->graph(['s3_bytes'], 'max')->get($slug)?->get('s3_bytes') ?? collect();
+            $historicalObjects = $this->pulse->graph(['s3_objects'], 'max')->get($slug)?->get('s3_objects') ?? collect();
+            
+            $sizePeak = $historicalBytes->max() ?? $totalSize;
+            $objectsPeak = $historicalObjects->max() ?? $totalObjects;
 
             $provider = 'OCI';
             $values = json_encode([
@@ -146,9 +157,9 @@ class S3Metrics
                 'provider' => $provider,
                 'storage_class' => $storageClass,
                 'size_current' => $totalSize,
-                'size_peak' => $totalSize,
+                'size_peak' => $sizePeak,
                 'objects_current' => $totalObjects,
-                'objects_peak' => $totalObjects,
+                'objects_peak' => $objectsPeak,
             ], flags: JSON_THROW_ON_ERROR);
             
             $this->pulse->set('s3_bucket', $slug, $values);

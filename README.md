@@ -1,26 +1,30 @@
 ![Screenshot of the S3 Metrics Pulse card](art%2Fheader.png)
 
-# S3 Metrics Card for Laravel Pulse
+# S3 Metrics Card for Laravel Pulse (Laravel 12 Compatible)
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/arcana/laravel-pulse-s3-metrics.svg?style=flat-square)](https://packagist.org/packages/arcana/laravel-pulse-s3-metrics)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/arcana-softworks/laravel-pulse-s3-metrics/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/arcana-softworks/laravel-pulse-s3-metrics/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/arcana-softworks/laravel-pulse-s3-metrics/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/arcana-softworks/laravel-pulse-s3-metrics/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/arcana/laravel-pulse-s3-metrics.svg?style=flat-square)](https://packagist.org/packages/arcana/laravel-pulse-s3-metrics)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/aliosmanyuksel/laravel-pulse-s3-metrics.svg?style=flat-square)](https://packagist.org/packages/aliosmanyuksel/laravel-pulse-s3-metrics)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/aliosmanyuksel/laravel-pulse-s3-metrics/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/aliosmanyuksel/laravel-pulse-s3-metrics/actions?query=workflow%3Arun-tests+branch%3Amain)
+[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/aliosmanyuksel/laravel-pulse-s3-metrics/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/aliosmanyuksel/laravel-pulse-s3-metrics/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
+[![Total Downloads](https://img.shields.io/packagist/dt/aliosmanyuksel/laravel-pulse-s3-metrics.svg?style=flat-square)](https://packagist.org/packages/aliosmanyuksel/laravel-pulse-s3-metrics)
 
 Fetch existing data usage and storage metrics from AWS CloudWatch for your S3 buckets and display them in a card on your [Laravel Pulse](https://pulse.laravel.com/) dashboard.
 
+**This is a Laravel 12 compatible fork of the original package by Arcana Softworks.**
+
 ![Screenshot of the S3 Metrics Pulse card](art%2Fscreenshot1.png)
 
-## Hire us
+## Original Package
 
-Developers at [Arcana Softworks](https://arcana-softworks.co.uk) have been building business-class PHP applications for more than 10 years. [Learn more about what we can do for you or your business](https://arcana-softworks.co.uk).
+This package is a Laravel 12 compatible fork of [arcana-softworks/laravel-pulse-s3-metrics](https://github.com/arcana-softworks/laravel-pulse-s3-metrics). 
+
+Developers at [Arcana Softworks](https://arcana-softworks.co.uk) have been building business-class PHP applications for more than 10 years. [Learn more about what they can do for you or your business](https://arcana-softworks.co.uk).
 
 ## Installation
 
 You can install the package via composer:
 
 ```bash
-composer require arcana/laravel-pulse-s3-metrics
+composer require aliosmanyuksel/laravel-pulse-s3-metrics
 ```
 
 You can optionally publish the config file with:
@@ -73,7 +77,7 @@ Add the S3 Metrics recorder to the `recorders` section of the Pulse config:
     // Existing recorders...
     // ...
     
-    \Arcana\PulseS3Metrics\Recorders\S3Metrics::class => [
+    \AliOsmanYuksel\PulseS3Metrics\Recorders\S3Metrics::class => [
         'enabled' => env('PULSE_S3_METRICS_ENABLED', true),
     ],
     
@@ -112,6 +116,16 @@ The recorder will run periodically whilst `php artisan pulse:work` is running. Y
 php artisan pulse:check
 ```
 
+## Laravel 12 Compatibility
+
+This package has been specifically adapted for Laravel 12 compatibility:
+
+- Updated to `illuminate/contracts: ^12.0`
+- Updated to `laravel/pulse: ^1.4`
+- Updated to `livewire/livewire: ^3.4`
+- Updated to `php: ^8.4`
+- Updated dev dependencies for Laravel 12
+
 ## Testing
 
 ```bash
@@ -128,13 +142,19 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ## Security Vulnerabilities
 
-Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
+Please review our security policy on how to report security vulnerabilities.
 
 ## Credits
 
-- [Liam Anderson](https://github.com/liamja)
-- [All Contributors](../../contributors)
+- [Liam Anderson](https://github.com/liam-anderson) - Original Developer
+- [Arcana Softworks](https://github.com/arcana-softworks) - Original Package
+- [Ali Osman Yüksel](https://github.com/aliosmanyuksel) - Laravel 12 Adapter
+- All Contributors
 
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+
+## About
+
+Display S3 bucket metrics on your Laravel Pulse dashboard - Laravel 12 compatible version

@@ -1,8 +1,8 @@
 <?php
 
-namespace Arcana\PulseS3Metrics\Tests;
+namespace AliOsmanYuksel\PulseS3Metrics\Tests;
 
-use Arcana\PulseS3Metrics\Recorders\S3Metrics;
+use AliOsmanYuksel\PulseS3Metrics\Recorders\S3Metrics;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables;
 use Illuminate\Foundation\Testing\RefreshDatabase;

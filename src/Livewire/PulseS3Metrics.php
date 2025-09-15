@@ -1,8 +1,8 @@
 <?php
 
-namespace Arcana\PulseS3Metrics\Livewire;
+namespace AliOsmanYuksel\PulseS3Metrics\Livewire;
 
-use Arcana\PulseS3Metrics\Events\S3MetricsRequested;
+use AliOsmanYuksel\PulseS3Metrics\Events\S3MetricsRequested;
 use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Support\Facades\View;

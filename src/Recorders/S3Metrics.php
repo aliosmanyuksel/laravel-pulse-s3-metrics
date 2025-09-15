@@ -1,8 +1,8 @@
 <?php
 
-namespace Arcana\PulseS3Metrics\Recorders;
+namespace AliOsmanYuksel\PulseS3Metrics\Recorders;
 
-use Arcana\PulseS3Metrics\Events\S3MetricsRequested;
+use AliOsmanYuksel\PulseS3Metrics\Events\S3MetricsRequested;
 use Illuminate\Contracts\Config\Repository;
 use Laravel\Pulse\Events\SharedBeat;
 use Laravel\Pulse\Pulse;

@@ -1,6 +1,6 @@
 <?php
 
-use Arcana\PulseS3Metrics\Recorders\S3Metrics;
+use AliOsmanYuksel\PulseS3Metrics\Recorders\S3Metrics;
 use Laravel\Pulse\Http\Middleware\Authorize;
 use Laravel\Pulse\Pulse;
 use Laravel\Pulse\Recorders;

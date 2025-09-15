@@ -1,6 +1,6 @@
 <?php
 
-use Arcana\PulseS3Metrics\Events\S3MetricsRequested;
+use AliOsmanYuksel\PulseS3Metrics\Events\S3MetricsRequested;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Laravel\Pulse\Events\SharedBeat;

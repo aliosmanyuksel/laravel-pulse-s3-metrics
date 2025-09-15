@@ -1,6 +1,6 @@
 <?php
 
-namespace Arcana\PulseS3Metrics\Events;
+namespace AliOsmanYuksel\PulseS3Metrics\Events;
 
 use Illuminate\Foundation\Events\Dispatchable;
 

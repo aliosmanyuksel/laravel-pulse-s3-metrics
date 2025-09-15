@@ -1,46 +1,46 @@
 {
-    "name": "arcana/laravel-pulse-s3-metrics",
-    "description": "Fetch existing data usage and storage metrics from AWS CloudWatch for your S3 bucket and display them in your Laravel Pulse dashboard.",
+    "name": "aliosmanyuksel/laravel-pulse-s3-metrics",
+    "description": "Fetch existing data usage and storage metrics from AWS CloudWatch for your S3 bucket and display them in your Laravel Pulse dashboard. Laravel 12 compatible.",
     "keywords": [
-        "arcana",
-        "arcana-softworks",
+        "aliosmanyuksel",
         "aws",
         "cloudwatch",
         "laravel",
         "laravel-pulse",
         "laravel-pulse-s3-metrics",
-        "s3"
+        "s3",
+        "laravel-12"
     ],
-    "homepage": "https://github.com/arcana-softworks/laravel-pulse-s3-metrics",
+    "homepage": "https://github.com/aliosmanyuksel/laravel-pulse-s3-metrics",
     "license": "MIT",
     "authors": [
         {
             "name": "Liam Anderson",
             "email": "liam@arcana-softworks.co.uk",
-            "role": "Developer"
+            "role": "Original Developer"
         },
         {
-            "name": "Arcana Softworks",
-            "email": "contact@arcana-softworks.co.uk",
-            "homepage": "https://arcana-softworks.co.uk"
+            "name": "Ali Osman Yüksel",
+            "email": "aliosmanyuksel@gmail.com",
+            "role": "Laravel 12 Adapter"
         }
     ],
     "support": {
-        "email": "contact@arcana-softworks.co.uk"
+        "email": "aliosmanyuksel@gmail.com"
     },
     "require": {
-        "php": "^8.1",
+        "php": "^8.4",
         "aws/aws-sdk-php": "^3.0",
-        "illuminate/contracts": "^10.0",
-        "laravel/pulse": "^1.0@beta",
-        "livewire/livewire": "^3.2",
+        "illuminate/contracts": "^12.0",
+        "laravel/pulse": "^1.4",
+        "livewire/livewire": "^3.4",
         "spatie/laravel-package-tools": "^1.16.1"
     },
     "require-dev": {
-        "larastan/larastan": "^2.7.0",
-        "laravel/pint": "^1.13.7",
-        "nunomaduro/collision": "^7.10",
-        "orchestra/testbench": "^8.18",
+        "larastan/larastan": "^2.8.0",
+        "laravel/pint": "^1.24",
+        "nunomaduro/collision": "^8.6",
+        "orchestra/testbench": "^9.0",
         "pestphp/pest": "^2.30",
         "pestphp/pest-plugin-arch": "^2.5",
         "pestphp/pest-plugin-laravel": "^2.2",
@@ -52,13 +52,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Arcana\\PulseS3Metrics\\": "src/",
-            "Arcana\\PulseS3Metrics\\Database\\Factories\\": "database/factories/"
+            "AliOsmanYuksel\\PulseS3Metrics\\": "src/",
+            "AliOsmanYuksel\\PulseS3Metrics\\Database\\Factories\\": "database/factories/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Arcana\\PulseS3Metrics\\Tests\\": "tests/",
+            "AliOsmanYuksel\\PulseS3Metrics\\Tests\\": "tests/",
             "Workbench\\App\\": "workbench/app/",
             "Workbench\\Database\\Factories\\": "workbench/database/factories/",
             "Workbench\\Database\\Seeders\\": "workbench/database/seeders/"
@@ -102,7 +102,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Arcana\\PulseS3Metrics\\PulseS3MetricsServiceProvider"
+                "AliOsmanYuksel\\PulseS3Metrics\\PulseS3MetricsServiceProvider"
             ]
         }
     },

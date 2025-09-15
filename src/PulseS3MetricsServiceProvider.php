@@ -1,8 +1,8 @@
 <?php
 
-namespace Arcana\PulseS3Metrics;
+namespace AliOsmanYuksel\PulseS3Metrics;
 
-use Arcana\PulseS3Metrics\Livewire\PulseS3Metrics;
+use AliOsmanYuksel\PulseS3Metrics\Livewire\PulseS3Metrics;
 use Illuminate\Foundation\Application;
 use Livewire\LivewireManager;
 use Spatie\LaravelPackageTools\Package;

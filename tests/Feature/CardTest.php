@@ -1,6 +1,6 @@
 <?php
 
-use Arcana\PulseS3Metrics\Livewire\PulseS3Metrics;
+use AliOsmanYuksel\PulseS3Metrics\Livewire\PulseS3Metrics;
 
 use function Pest\Livewire\livewire;
 

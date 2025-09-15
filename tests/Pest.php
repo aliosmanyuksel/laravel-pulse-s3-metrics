@@ -1,6 +1,6 @@
 <?php
 
-use Arcana\PulseS3Metrics\Tests\TestCase;
+use AliOsmanYuksel\PulseS3Metrics\Tests\TestCase;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;

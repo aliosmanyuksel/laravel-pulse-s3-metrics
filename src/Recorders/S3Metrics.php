@@ -112,9 +112,20 @@ class S3Metrics
                 $totalObjects++;
             }
 
-            // Record the metrics
-            $this->recordBytesUsedForBucket($slug, time(), $totalSize);
-            $this->recordObjectsForBucket($slug, time(), $totalObjects);
+            // Record the metrics using Pulse's built-in methods
+            $this->pulse->record(
+                type: 's3_bytes',
+                key: $slug,
+                value: $totalSize,
+                timestamp: time(),
+            );
+            
+            $this->pulse->record(
+                type: 's3_objects',
+                key: $slug,
+                value: $totalObjects,
+                timestamp: time(),
+            );
 
             $provider = 'OCI';
             $this->pulse->set('s3_bucket', $slug, $values = json_encode([
